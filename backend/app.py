@@ -28,6 +28,16 @@ app.add_middleware(
 os.makedirs("uploads", exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
+from fastapi.responses import FileResponse
+
+@app.get("/")
+def serve_frontend():
+    import os
+    # Serve the index.html from the frontend directory
+    frontend_path = os.path.join("..", "frontend", "index.html")
+    return FileResponse(frontend_path)
+
+
 try:
     model = YOLO('yolov8n.pt')
 except Exception as e:

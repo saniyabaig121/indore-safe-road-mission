@@ -1026,7 +1026,7 @@
       }
 
       try {
-        const res = await fetch('http://localhost:8001/api/reports');
+        const res = await fetch('/api/reports');
         const reports = await res.json();
         renderDashboard(reports);
       } catch (err) {
@@ -1097,7 +1097,8 @@
         setTimeout(() => t.remove(), 4000);
     }
 
-    const ws = new WebSocket('ws://localhost:8001/ws');
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
     ws.onopen = () => document.getElementById('live-badge')?.classList.remove('hidden');
     ws.onclose = () => document.getElementById('live-badge')?.classList.add('hidden');
     ws.onmessage = (e) => {
@@ -1135,7 +1136,7 @@
       }
       setTimeout(() => map.invalidateSize(), 300);
       try {
-        const res = await fetch('http://localhost:8001/api/reports');
+        const res = await fetch('/api/reports');
         globalReports = await res.json();
         applyFilters();
       } catch (err) { console.error(err); }
@@ -1152,7 +1153,7 @@
 
     async function loadAdmin() {
       try {
-        const resA = await fetch('http://localhost:8001/api/analytics');
+        const resA = await fetch('/api/analytics');
         const analytics = await resA.json();
         document.getElementById('admin-analytics').innerHTML = `
            <div class="bg-surface-container-high p-3 rounded-lg"><div class="text-2xl font-bold text-primary">${analytics.total}</div><div class="text-xs text-outline">Total</div></div>
@@ -1160,7 +1161,7 @@
            <div class="bg-surface-container-high p-3 rounded-lg"><div class="text-2xl font-bold text-blue-500">${analytics.in_progress}</div><div class="text-xs text-outline">In Progress</div></div>
            <div class="bg-surface-container-high p-3 rounded-lg"><div class="text-2xl font-bold text-green-500">${analytics.resolved}</div><div class="text-xs text-outline">Resolved (${analytics.percent_resolved}%)</div></div>
         `;
-        const res = await fetch('http://localhost:8001/api/reports');
+        const res = await fetch('/api/reports');
         const reports = await res.json();
         const list = document.getElementById('admin-reports-list');
         list.innerHTML = '';
@@ -1190,7 +1191,7 @@
         formData.append('status', newStatus);
         formData.append('notes', 'Updated via Admin Console');
         try {
-            const res = await fetch(`http://localhost:8001/api/report/${id}/status`, {
+            const res = await fetch(`/api/report/${id}/status`, {
                 method: 'POST',
                 body: formData
             });
@@ -1277,7 +1278,7 @@
 
     async function submitReport(formData, inputElement) {
       try {
-        const response = await fetch('http://localhost:8001/api/report', {
+        const response = await fetch('/api/report', {
           method: 'POST',
           body: formData
         });
@@ -1292,7 +1293,7 @@
         }
       } catch (err) {
         console.error(err);
-        alert('Network error. Is the backend running on port 8001?');
+        alert('Network error. Is the backend running?');
       } finally {
         loadingOverlay.classList.add('hidden');
         loadingOverlay.classList.remove('flex');
